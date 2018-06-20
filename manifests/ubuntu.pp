@@ -15,19 +15,16 @@
 class datadog_agent::ubuntu(
   $apt_key = 'A2923DFF56EDA6E76E55E492D3A80E30382E94DE',
   $agent_version = 'latest',
-  $other_keys = ['935F5A436A5A6E8788F0765B226AE980C7A7DA52'],
   $location = 'https://apt.datadoghq.com',
   $release = 'stable',
   $repos = 'main',
 ) inherits datadog_agent::params{
 
   ensure_packages(['apt-transport-https'])
-  validate_array($other_keys)
 
   if !$::datadog_agent::skip_apt_key_trusting {
-    $mykeys = concat($other_keys, [$apt_key])
 
-    ::datadog_agent::ubuntu::install_key { $mykeys:
+    ::datadog_agent::ubuntu::install_key { [$apt_key]:
       before  => File['/etc/apt/sources.list.d/datadog.list'],
     }
   }
